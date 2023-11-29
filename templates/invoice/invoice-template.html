@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Skolo Invoice</title>
+		<title>Invoice</title>
 
 		<style>
 			.invoice-box {
@@ -105,21 +105,23 @@
 	<body>
 		<div class="invoice-box">
 
-
-
 			<table cellpadding="0" cellspacing="0">
 				<tr class="top">
 					<td colspan="2">
 						<table>
 
               <tr >
-      					<td><h1>Invoice: {{p_settings.clientName}}</h1></td>
-      				</tr>
+				<td class="title">
+					<img src="https://premiumsolarenergy.co.za/wp-content/uploads/2019/12/Premium-Solar-Energy-Logo-Transparent-Tight.png" style="width: 250%; max-width: 250px" />
+				</td>
+      			<td><h1>Invoice</h1></td>
+						
+      		</tr>
+
 
 							<tr>
-								<td class="title">
-									<img src="https://host.tatiblockchain.co.za/img/skolo_logo.png" style="width: 100%; max-width: 100px" />
-								</td>
+								<td/>
+								
 
 								<td>
 									Invoice #: {{invoice.number}}<br />

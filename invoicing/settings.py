@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'crispy_bootstrap5',
     'invoice',
 ]
 
@@ -85,6 +86,8 @@ TEMPLATES = [
     },
 ]
 
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
 WSGI_APPLICATION = 'invoicing.wsgi.application'
 
 
@@ -94,11 +97,11 @@ WSGI_APPLICATION = 'invoicing.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'invoice',
-        'USER': 'invoiceuser',
-        'PASSWORD': 'invoice_password',
+        'NAME': 'solar',
+        'USER': 'trivista',
+        'PASSWORD': 'TriVista',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432',
     }
 }
 
@@ -124,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-ZA'
 
 TIME_ZONE = 'Africa/Johannesburg'
 

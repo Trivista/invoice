@@ -29,6 +29,41 @@ class UserLoginForm(forms.ModelForm):
 
 
 class ClientForm(forms.ModelForm):
+    clientName = forms.CharField(
+                            required = True,
+                            label='Client Name',
+                            widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Client Name'}),),
+    clientLogo = forms.ImageField(
+                            required = False,
+                            label='Client Logo',
+                            widget=forms.FileInput(attrs={'class': 'form-control mb-3'}),),
+    addressLine1 = forms.CharField(
+                            required = False,
+                            label='Address',
+                            widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Address'}),),
+    province = forms.ChoiceField(
+                            required = False,
+                            label='Province',
+                            choices = Client.PROVINCES,
+                            widget=forms.Select(attrs={'class': 'form-control mb-3'}),),
+    postalCode = forms.CharField(
+                            required = False,
+                            label='Postal Code',
+                            widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Postal Code'}),),
+    phoneNumber = forms.CharField(
+                            required = False,
+                            label='Phone Number',
+                            widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Phone Number'}),),
+    emailAddress = forms.CharField(
+                            required = False,
+                            label='Email Address',
+                            widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Email Address'}),),
+    taxNumber = forms.CharField(
+                            required = False,
+                            label='Tax Number',
+                            widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Tax Number'}),),
+    
+    
     class Meta:
         model = Client
         fields = ['clientName', 'clientLogo', 'addressLine1', 'province', 'postalCode', 'phoneNumber', 'emailAddress', 'taxNumber']
@@ -36,6 +71,28 @@ class ClientForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
+    title = forms.CharField(
+                    required = True,
+                    label='Product Name',
+                    widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Product Name'}),),
+    description = forms.CharField(
+                    required = False,
+                    label='Product Description',
+                    widget=forms.Textarea(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Product Description'}),),
+    quantity = forms.IntegerField(
+                    required = True,
+                    label='Product Quantity',
+                    widget=forms.NumberInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Product Quantity'}),),
+    price = forms.DecimalField(
+                    required = True,
+                    label='Product Price',
+                    widget=forms.NumberInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Product Price'}),),
+    currency = forms.ChoiceField(
+                    required = True,
+                    label='Product Currency',
+                    choices = Product.CURRENCY,
+                    widget=forms.Select(attrs={'class': 'form-control mb-3'}),),
+    
     class Meta:
         model = Product
         fields = ['title', 'description', 'quantity', 'price', 'currency']
@@ -92,7 +149,7 @@ class InvoiceForm(forms.ModelForm):
                 css_class='form-row'),
             'notes',
 
-            Submit('submit', ' EDIT INVOICE '))
+            Submit('submit', ' SAVE INVOICE '))
 
     class Meta:
         model = Invoice

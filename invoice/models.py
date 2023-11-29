@@ -3,15 +3,17 @@ from django.template.defaultfilters import slugify
 from django.utils import timezone
 from uuid import uuid4
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 
 class Client(models.Model):
 
     PROVINCES = [
-    ('Gauteng', 'Gauteng'),
-    ('Free State', 'Free State'),
-    ('Limpopo', 'Limpopo'),
+        ('Western Cape', 'Western Cape'), 
+        ('Gauteng', 'Gauteng'),
+        ('Free State', 'Free State'),
+        ('Limpopo', 'Limpopo'),
     ]
 
     #Basic Fields.
@@ -56,16 +58,17 @@ class Client(models.Model):
 
 class Invoice(models.Model):
     TERMS = [
-    ('14 days', '14 days'),
-    ('30 days', '30 days'),
-    ('60 days', '60 days'),
+        ('7 days', '7 days'),
+        ('14 days', '14 days'),
+        ('30 days', '30 days'),
+        ('60 days', '60 days'),
     ]
 
     STATUS = [
-    ('CURRENT', 'CURRENT'),
-    ('EMAIL_SENT', 'EMAIL_SENT'),
-    ('OVERDUE', 'OVERDUE'),
-    ('PAID', 'PAID'),
+        ('CURRENT', 'CURRENT'),
+        ('EMAIL_SENT', 'EMAIL_SENT'),
+        ('OVERDUE', 'OVERDUE'),
+        ('PAID', 'PAID'),
     ]
 
     title = models.CharField(null=True, blank=True, max_length=100)
@@ -109,8 +112,8 @@ class Invoice(models.Model):
 
 class Product(models.Model):
     CURRENCY = [
-    ('R', 'ZAR'),
-    ('$', 'USD'),
+        ('R', 'ZAR'),
+        ('$', 'USD'),
     ]
 
     title = models.CharField(null=True, blank=True, max_length=100)
@@ -154,9 +157,10 @@ class Product(models.Model):
 class Settings(models.Model):
 
     PROVINCES = [
-    ('Gauteng', 'Gauteng'),
-    ('Free State', 'Free State'),
-    ('Limpopo', 'Limpopo'),
+        ('Western Cape', 'Western Cape'),
+        ('Gauteng', 'Gauteng'),
+        ('Free State', 'Free State'),
+        ('Limpopo', 'Limpopo'),
     ]
 
     #Basic Fields

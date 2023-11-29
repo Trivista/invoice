@@ -171,16 +171,16 @@ def createBuildInvoice(request, slug):
     if request.method == 'GET':
         prod_form  = ProductForm()
         inv_form = InvoiceForm(instance=invoice)
-        client_form = ClientSelectForm(initial_client=invoice.client)
+        select_client = ClientSelectForm(initial_client=invoice.client)
         context['prod_form'] = prod_form
         context['inv_form'] = inv_form
-        context['client_form'] = client_form
+        context['select_client'] = select_client
         return render(request, 'invoice/create-invoice.html', context)
 
     if request.method == 'POST':
         prod_form  = ProductForm(request.POST)
         inv_form = InvoiceForm(request.POST, instance=invoice)
-        client_form = ClientSelectForm(request.POST, initial_client=invoice.client, instance=invoice)
+        select_client = ClientSelectForm(request.POST, initial_client=invoice.client, instance=invoice)
 
         if prod_form.is_valid():
             obj = prod_form.save(commit=False)
@@ -194,22 +194,20 @@ def createBuildInvoice(request, slug):
 
             messages.success(request, "Invoice updated succesfully")
             return redirect('create-build-invoice', slug=slug)
-        elif client_form.is_valid() and 'client' in request.POST:
+        elif select_client.is_valid() and 'client' in request.POST:
 
-            client_form.save()
+            select_client.save()
             messages.success(request, "Client added to invoice succesfully")
             return redirect('create-build-invoice', slug=slug)
         else:
             context['prod_form'] = prod_form
             context['inv_form'] = inv_form
-            context['client_form'] = client_form
+            context['select_client'] = select_client
             messages.error(request,"Problem processing your request")
             return render(request, 'invoice/create-invoice.html', context)
 
 
     return render(request, 'invoice/create-invoice.html', context)
-
-
 
 
 def viewPDFInvoice(request, slug):
@@ -225,7 +223,7 @@ def viewPDFInvoice(request, slug):
     products = Product.objects.filter(invoice=invoice)
 
     #Get Client Settings
-    p_settings = Settings.objects.get(clientName='Skolo Online Learning')
+    p_settings = Settings.objects.get(clientName='Premium Solar Energy')
 
     #Calculate the Invoice Total
     invoiceCurrency = ''
@@ -262,7 +260,7 @@ def viewDocumentInvoice(request, slug):
     products = Product.objects.filter(invoice=invoice)
 
     #Get Client Settings
-    p_settings = Settings.objects.get(clientName='Skolo Online Learning')
+    p_settings = Settings.objects.get(clientName='Premium Solar Energy')
 
     #Calculate the Invoice Total
     invoiceTotal = 0.0
@@ -302,7 +300,7 @@ def viewDocumentInvoice(request, slug):
       #Javascript delay is optional
 
     #Remember that location to wkhtmltopdf
-    config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
     #IF you have CSS to add to template
     css1 = os.path.join(settings.CSS_LOCATION, 'assets', 'css', 'bootstrap.min.css')
@@ -332,7 +330,7 @@ def emailDocumentInvoice(request, slug):
     products = Product.objects.filter(invoice=invoice)
 
     #Get Client Settings
-    p_settings = Settings.objects.get(clientName='Skolo Online Learning')
+    p_settings = Settings.objects.get(clientName='Premium Solar Energy')
 
     #Calculate the Invoice Total
     invoiceTotal = 0.0
@@ -372,7 +370,7 @@ def emailDocumentInvoice(request, slug):
       #Javascript delay is optional
 
     #Remember that location to wkhtmltopdf
-    config = pdfkit.configuration(wkhtmltopdf='/usr/bin/wkhtmltopdf')
+    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
 
     #Saving the File
     filepath = os.path.join(settings.MEDIA_ROOT, 'client_invoices')
@@ -395,12 +393,6 @@ def emailDocumentInvoice(request, slug):
     return redirect('create-build-invoice', slug=slug)
 
 
-
-
-
-
-
-
 def deleteInvoice(request, slug):
     try:
         Invoice.objects.get(slug=slug).delete()
@@ -411,10 +403,40 @@ def deleteInvoice(request, slug):
     return redirect('invoices')
 
 
+def createClient(request):
+    #create a new client ....
+    uniqueId = str(uuid4()).split('-')[4]
+    newClient = Client.objects.create(uniqueId=uniqueId)
+    newClient.save()
+
+    c = Client.objects.get(uniqueId=uniqueId)
+    return redirect('client', uniqueId=c.uniqueId)
+
+def add_client(request):
+    if request.method == "POST":
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponse(status=204, headers={'HX-Trigger': 'clientListChanged'})
+    else:
+        form = ClientForm()
+    return render(request, 'client-form.html', {'form': form})
+    # 
+def edit_client(request, uniqueId):
+    client = Client.objects.get(uniqueId=uniqueId)
+    if request.method == "POST":
+        form = ClientForm(request.POST, instance=client)
+        if form.is_valid():
+            form.save()
+            return HttpResponse(status=204, headers={'HX-Trigger': 'clientListChanged'})
+    else:
+        form = ClientForm(instance=client)
+    return render(request, 'client-form.html', {'form': form, client: client})
+
 
 
 def companySettings(request):
-    company = Settings.objects.get(clientName='Skolo Online Learning')
+    company = Settings.objects.get(clientName='Premium Solar Energy')
     context = {'company': company}
     return render(request, 'invoice/company-settings.html', context)
 

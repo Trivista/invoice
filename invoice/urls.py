@@ -23,4 +23,7 @@ path('invoices/email-document/<slug:slug>',views.emailDocumentInvoice, name='ema
 
 #Company Settings Page
 path('company/settings',views.companySettings, name='company-settings'),
+
+#Create client
+# path('client/<str:uniqueId>/',views.add_client, name='client-form'),
 ]

@@ -28,7 +28,7 @@
     <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-        Skolo Online Invoice Generator
+      Premium Solar Energy Invoice Generator
       </div>
 
       <div class="card-body">
@@ -96,9 +96,9 @@
               <form class="" action="#" method="post">
                 {% csrf_token %}
 
-                {{client_form|crispy}}
+                {{select_client|crispy}}
 
-                <button type="submit" class="btn btn-primary">ADD CLIENT</button>
+                <button type="submit" class="btn btn-primary">CHANGE CLIENT</button>
               </form>
             </div>
 
@@ -137,7 +137,7 @@
 
         <form class="" action="#" method="post" enctype="multipart/form-data">
           {% csrf_token %}
-
+          {% load crispy_forms_tags %}
 
         <div class="modal-header border-bottom-0">
           <h5 class="modal-title">Add Invoice Product</h5>
