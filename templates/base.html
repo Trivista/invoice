@@ -16,8 +16,8 @@
     <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="{% static 'assets/css/dashboard.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/css/feather.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet">
+    {% comment %} <link href="{% static 'assets/css/feather.css' %}" rel="stylesheet"> {% endcomment %}
    
 
     {% block css %}
@@ -147,10 +147,10 @@
   </div>
   <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
  
-  <script src="https://unpkg.com/feather-icons"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script> 
+ {% comment %} <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-  
+   {% endcomment %}
    <!-- Include htmx library -->   
   <script src="{% static 'assets/js/htmx.min.js' %}"></script>
   <script src="{% static 'assets/js/dashboard.js' %}"></script>

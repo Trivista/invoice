@@ -27,3 +27,9 @@ path('company/settings',views.companySettings, name='company-settings'),
 #Create client
 path('client/<str:uniqueId>/',views.createClient, name='client-form'),
 ]
+
+htmx_urlpatterns = [
+path('invoices/create',views.createInvoice, name='create-invoice'),
+]
+
+urlpatterns += htmx_urlpatterns

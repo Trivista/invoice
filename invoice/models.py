@@ -19,6 +19,7 @@ class Client(models.Model):
     #Basic Fields.
     clientName = models.CharField(null=True, blank=True, max_length=200)
     addressLine1 = models.CharField(null=True, blank=True, max_length=200)
+    town = models.CharField(null=True, blank=True, max_length=200)
     clientLogo  = models.ImageField(default='default_logo.jpg', upload_to='company_logos')
     province = models.CharField(choices=PROVINCES, blank=True, max_length=100)
     postalCode = models.CharField(null=True, blank=True, max_length=10)
@@ -167,6 +168,7 @@ class Settings(models.Model):
     clientName = models.CharField(null=True, blank=True, max_length=200)
     clientLogo = models.ImageField(default='default_logo.jpg', upload_to='company_logos')
     addressLine1 = models.CharField(null=True, blank=True, max_length=200)
+    town = models.CharField(null=True, blank=True, max_length=200)
     province = models.CharField(choices=PROVINCES, blank=True, max_length=100)
     postalCode = models.CharField(null=True, blank=True, max_length=10)
     phoneNumber = models.CharField(null=True, blank=True, max_length=100)
