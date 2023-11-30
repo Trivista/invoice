@@ -17,7 +17,7 @@
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2">
         {% comment %} <button href="#dialog" type="button" class="btn btn-primary" data-bs-toggle="modal" hx-trigger="load:modal">Add New Client</button> {% endcomment %}
-        {% comment %} <button type="button" data-bs-toggle="modal" hx-get="{% url 'client-form' %}" hx-trigger="load:modal" >Add New Client</button> {% endcomment %}
+        {% comment %} <button type="button" data-bs-toggle="modal" hx-get="{% url 'client-form' client.uniqueId %}" hx-target="#dialog" >Add New Client</button> {% endcomment %}
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@
           <th scope="col">Province</th>
         </tr>
       </thead>
-      <tbody hx-get="{% url 'clients' %}" hx-target="this">>
+      <tbody hx-get="{% url 'clients' %}" hx-target="load">>
 
         {% for client in clients %}
       <tr>

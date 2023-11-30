@@ -16,6 +16,9 @@
     <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="{% static 'assets/css/dashboard.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/feather.css' %}" rel="stylesheet">
+   
 
     {% block css %}
     {% endblock %}
@@ -39,7 +42,7 @@
 
 
   </head>
-  <body>
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
 <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
   <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Premium Solar Energy</a>
@@ -137,21 +140,19 @@
 <!-- MODALS MODALS -->
   <!-- Modals Start Here -->
   <div id="modal" class="modal fade" tabindex="-1" >
-    <div id="dialog" class="modal-dialog">
+    <div id="dialog" class="modal-dialog" hx-target="this">
       <!-- Inject hx-target HTML here -->
      
     </div>
   </div>
   <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
-   <!-- Include htmx library -->   
-  <script src="https://unpkg.com/htmx.org@1.9.9"></script>
+ 
   <script src="https://unpkg.com/feather-icons"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
   
-
+   <!-- Include htmx library -->   
+  <script src="{% static 'assets/js/htmx.min.js' %}"></script>
   <script src="{% static 'assets/js/dashboard.js' %}"></script>
   
   <script src="{% static 'dialog.js' %}"></script>   
