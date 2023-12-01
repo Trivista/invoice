@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'partials/base.html' %}
 
 {% load static %}
 {% load crispy_forms_tags %}
@@ -28,7 +28,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Total Number of Invoices: {{invoices}}</h5>
                   <h5 class="card-title">Paid Invoices: {{paidInvoices}}</h5>
-                  <a href="{% url 'invoices' %}" class="btn btn-primary btn-lg">View Invoices</a>
+                  <a href="{% url 'invoice-list' %}" class="btn btn-primary btn-lg">View Invoices</a>
                 </div>
               </div>
 

@@ -55,7 +55,7 @@
       <a class="nav-link px-3" href="{% url 'logout' %}">Log Out</a>
     </div>
   </div>
-</header>
+</header> 
 
 <div class="container-fluid">
   <div class="row">
@@ -69,7 +69,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'invoices' %}">
+            <a class="nav-link" href="{% url 'invoice-list' %}">
               <span data-feather="file"></span>
               Invoices
             </a>
@@ -144,13 +144,13 @@
       <!-- Inject hx-target HTML here -->
      
     </div>
-  </div>
+  </div> 
   <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
  
   <script src="https://unpkg.com/feather-icons"></script> 
- {% comment %} <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-   {% endcomment %}
+  
    <!-- Include htmx library -->   
   <script src="{% static 'assets/js/htmx.min.js' %}"></script>
   <script src="{% static 'assets/js/dashboard.js' %}"></script>

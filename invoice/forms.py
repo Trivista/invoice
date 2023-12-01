@@ -40,7 +40,7 @@ class ClientForm(forms.ModelForm):
     addressLine1 = forms.CharField(
                             required = False,
                             label='Address',
-                            widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Address'}),),
+                            widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Address line 1'}),),
     province = forms.ChoiceField(
                             required = False,
                             label='Province',
@@ -62,16 +62,14 @@ class ClientForm(forms.ModelForm):
                             required = False,
                             label='Tax Number',
                             widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Tax Number'}),),
-    
-    
+     
     class Meta:
         model = Client
         fields = ['clientName', 'clientLogo', 'addressLine1', 'province', 'postalCode', 'phoneNumber', 'emailAddress', 'taxNumber']
 
 
-
 class ProductForm(forms.ModelForm):
-    title = forms.CharField(
+    code = forms.CharField(
                     required = True,
                     label='Product Name',
                     widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Product Name'}),),
@@ -79,41 +77,55 @@ class ProductForm(forms.ModelForm):
                     required = False,
                     label='Product Description',
                     widget=forms.Textarea(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Product Description'}),),
-    quantity = forms.IntegerField(
+    quantity_on_hand = forms.IntegerField(
                     required = True,
-                    label='Product Quantity',
+                    label='Quantity on Hand',
                     widget=forms.NumberInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Product Quantity'}),),
-    price = forms.DecimalField(
+    selling_price = forms.DecimalField(
                     required = True,
                     label='Product Price',
                     widget=forms.NumberInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Product Price'}),),
-    currency = forms.ChoiceField(
+    unit_of_measure = forms.CharField(
                     required = True,
-                    label='Product Currency',
-                    choices = Product.CURRENCY,
-                    widget=forms.Select(attrs={'class': 'form-control mb-3'}),),
+                    label='Unit of Measure',
+                    widget=forms.TextInput(attrs={'class': 'form-control mb-3'}),),
+    active = forms.BooleanField(
+                    required = False,
+                    label='Active',
+                    widget=forms.CheckboxInput(attrs={'class': 'form-check-input mb-3'}),),
+    status = forms.CharField(
+                    required = True,
+                    disabled=True,
+                    label='Status',
+                    widget=forms.TextInput(attrs={'class': 'form-control mb-3'}),),
     
     class Meta:
         model = Product
-        fields = ['title', 'description', 'quantity', 'price', 'currency']
+        fields = ['code', 'description', 'quantity_on_hand', 'selling_price', 'unit_of_measure',
+                  'active', 'status']
 
 
 class InvoiceForm(forms.ModelForm):
     THE_OPTIONS = [
-    ('14 days', '14 days'),
-    ('30 days', '30 days'),
-    ('60 days', '60 days'),
+        ('7 days', '7 days'),
+        ('14 days', '14 days'),
+        ('30 days', '30 days'),
+        ('60 days', '60 days'),
     ]
     STATUS_OPTIONS = [
-    ('CURRENT', 'CURRENT'),
-    ('OVERDUE', 'OVERDUE'),
-    ('PAID', 'PAID'),
+        ('CURRENT', 'CURRENT'),
+        ('EMAIL_SENT', 'EMAIL_SENT'),
+        ('OVERDUE', 'OVERDUE'),
+        ('PARTIALLY PAID', 'PARTIALLY PAID'),
+        ('FULLY PAID', 'FULLY PAID'),
+        ('CREDITED', 'CREDITED'),
     ]
 
-    title = forms.CharField(
+    reference = forms.CharField(
                     required = True,
-                    label='Invoice Name or Title',
-                    widget=forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Enter Invoice Title'}),)
+                    label='Reference',
+                    disabled=True,
+                    widget=forms.TextInput(attrs={'class': 'form-control mb-3'}),)
     paymentTerms = forms.ChoiceField(
                     choices = THE_OPTIONS,
                     required = True,
@@ -133,14 +145,32 @@ class InvoiceForm(forms.ModelForm):
                         required = True,
                         label='Invoice Due',
                         widget=DateInput(attrs={'class': 'form-control mb-3'}),)
-
+    
+    tax_total = forms.DecimalField(
+                        required = True,
+                        label='Tax Total',
+                        disabled=True,
+                        widget=forms.NumberInput(attrs={'class': 'form-control mb-3'}),)
+    
+    invoice_excl_total = forms.DecimalField(
+                        required = True,
+                        label='Invoice Excl Total',
+                        disabled=True,
+                        widget=forms.NumberInput(attrs={'class': 'form-control mb-3'}),)
+    
+    invoice_incl_total = forms.DecimalField(
+                        required = True,
+                        label='Invoice Incl Total',
+                        disabled=True,
+                        widget=forms.NumberInput(attrs={'class': 'form-control mb-3'}),)
+    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('title', css_class='form-group col-md-6'),
+                Column('reference', css_class='form-group col-md-6'),
                 Column('dueDate', css_class='form-group col-md-6'),
                 css_class='form-row'),
             Row(
@@ -153,13 +183,63 @@ class InvoiceForm(forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ['title', 'dueDate', 'paymentTerms', 'status', 'notes']
+        fields = ['reference', 'dueDate', 'paymentTerms', 'status', 'notes']
 
+
+class InvoiceLineForm(forms.ModelForm):
+    product = forms.ModelChoiceField(
+                    queryset=Product.objects.all(),
+                    required = True,
+                    label='Select Product',
+                    widget=forms.Select(attrs={'class': 'form-control mb-3'}),)
+    
+    quantity = forms.IntegerField(
+                    required = True,
+                    label='Product Quantity',
+                    widget=forms.NumberInput(attrs={'class': 'form-control mb-3'}),)    
+    
+    price = forms.DecimalField(
+                    required = True,
+                    label='Product Price',
+                    disabled=True,
+                    widget=forms.NumberInput(attrs={'class': 'form-control mb-3'}),)
+    
+    tax_rate = forms.ModelChoiceField(
+                    queryset=TaxRate.objects.all(),
+                    required = True,
+                    label='Select Tax Rate',
+                    widget=forms.Select(attrs={'class': 'form-control mb-3'}),)
+    
+    #  Calculated Fields
+    sale_tax = forms.DecimalField(
+                    required = True,
+                    label='Tax',
+                    disabled=True,
+                    widget=forms.NumberInput(attrs={'class': 'form-control mb-3'}),)
+    
+    sale_amount = forms.DecimalField(
+                    required = True,
+                    label='Sale Amount',
+                    disabled=True,
+                    widget=forms.NumberInput(attrs={'class': 'form-control mb-3'}),)
+    
+    line_total = forms.DecimalField(
+                    required = True,
+                    label='Line Total',
+                    disabled=True,
+                    widget=forms.NumberInput(attrs={'class': 'form-control mb-3'}),)
+    
+    class Meta:
+        model = InvoiceLine
+        fields = ['product', 'quantity', 'price', 'tax_rate', 'sale_tax', 'sale_amount', 
+                  'line_total']
+        
 
 class SettingsForm(forms.ModelForm):
     class Meta:
         model = Settings
-        fields = ['clientName', 'clientLogo', 'addressLine1', 'province', 'postalCode', 'phoneNumber', 'emailAddress', 'taxNumber']
+        fields = ['clientName', 'clientLogo', 'addressLine1', 'province', 'postalCode', 
+                  'phoneNumber', 'emailAddress', 'taxNumber']
 
 
 class ClientSelectForm(forms.ModelForm):

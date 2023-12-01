@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'partials/base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
@@ -36,7 +36,7 @@
           <th scope="col">Province</th>
         </tr>
       </thead>
-      <tbody hx-get="{% url 'clients' %}" hx-target="load">>
+      <tbody hx-get="{% url 'clients' %}" hx-target="load">
 
         {% for client in clients %}
       <tr>

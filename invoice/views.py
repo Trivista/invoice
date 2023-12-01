@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
+
 from .forms import *
 from .models import *
 from .functions import *
@@ -15,9 +16,18 @@ from django.http import HttpResponse
 
 import pdfkit
 from django.template.loader import get_template
+from django.views.generic.list import ListView
 import os
 
 
+class InvoiceList(ListView):
+    model = Invoice
+    template_name = 'partials/invoice-list.html'
+
+    def get_queryset(self):
+        return Invoice.objects.all().order_by('-id')
+    
+    
 #Anonymous required
 def anonymous_required(function=None, redirect_url=None):
 
@@ -83,13 +93,13 @@ def dashboard(request):
 
 
 
-@login_required
-def invoices(request):
-    context = {}
-    invoices = Invoice.objects.all()
-    context['invoices'] = invoices
+# @login_required
+# def invoices(request):
+#     context = {}
+#     invoices = Invoice.objects.all()
+#     context['invoices'] = invoices
 
-    return render(request, 'invoice/invoices.html', context)
+#     return render(request, 'invoice/invoices.html', context)
 
 
 @login_required
@@ -160,34 +170,34 @@ def createBuildInvoice(request, slug):
         messages.error(request, 'Something went wrong')
         return redirect('invoices')
 
-    #fetch all the products - related to this invoice
-    products = Product.objects.filter(invoice=invoice)
+    #fetch all the invoice lines - related to this invoice
+    invoiceLines = InvoiceLine.objects.filter(invoice=invoice)
 
 
     context = {}
     context['invoice'] = invoice
-    context['products'] = products
+    context['invoiceLines'] = invoiceLines
 
     if request.method == 'GET':
-        prod_form  = ProductForm()
+        inv_line_form  = InvoiceLineForm()
         inv_form = InvoiceForm(instance=invoice)
         select_client = ClientSelectForm(initial_client=invoice.client)
-        context['prod_form'] = prod_form
+        context['inv_line_form'] = inv_line_form
         context['inv_form'] = inv_form
         context['select_client'] = select_client
         return render(request, 'invoice/create-invoice.html', context)
 
     if request.method == 'POST':
-        prod_form  = ProductForm(request.POST)
+        inv_line_form  = InvoiceLineForm(request.POST)
         inv_form = InvoiceForm(request.POST, instance=invoice)
         select_client = ClientSelectForm(request.POST, initial_client=invoice.client, instance=invoice)
 
-        if prod_form.is_valid():
-            obj = prod_form.save(commit=False)
+        if inv_line_form.is_valid():
+            obj = inv_line_form.save(commit=False)
             obj.invoice = invoice
             obj.save()
 
-            messages.success(request, "Invoice product added succesfully")
+            messages.success(request, "Invoice line added succesfully")
             return redirect('create-build-invoice', slug=slug)
         elif inv_form.is_valid and 'paymentTerms' in request.POST:
             inv_form.save()
@@ -200,7 +210,7 @@ def createBuildInvoice(request, slug):
             messages.success(request, "Client added to invoice succesfully")
             return redirect('create-build-invoice', slug=slug)
         else:
-            context['prod_form'] = prod_form
+            context['inv_line_form'] = inv_line_form
             context['inv_form'] = inv_form
             context['select_client'] = select_client
             messages.error(request,"Problem processing your request")
@@ -219,17 +229,17 @@ def viewPDFInvoice(request, slug):
         messages.error(request, 'Something went wrong')
         return redirect('invoices')
 
-    #fetch all the products - related to this invoice
-    products = Product.objects.filter(invoice=invoice)
+    #fetch all the invoice lines - related to this invoice
+    invoice_lines = InvoiceLine.objects.filter(invoice=invoice)
 
     #Get Client Settings
     p_settings = Settings.objects.get(clientName='Premium Solar Energy')
 
     #Calculate the Invoice Total
-    invoiceCurrency = ''
+    invoiceCurrency = 'R'
     invoiceTotal = 0.0
-    if len(products) > 0:
-        for x in products:
+    if len(invoice_lines) > 0:
+        for x in invoice_lines:
             y = float(x.quantity) * float(x.price)
             invoiceTotal += y
             invoiceCurrency = x.currency
@@ -238,7 +248,7 @@ def viewPDFInvoice(request, slug):
 
     context = {}
     context['invoice'] = invoice
-    context['products'] = products
+    context['invoice_lines'] = invoice_lines
     context['p_settings'] = p_settings
     context['invoiceTotal'] = "{:.2f}".format(invoiceTotal)
     context['invoiceCurrency'] = invoiceCurrency
@@ -256,16 +266,16 @@ def viewDocumentInvoice(request, slug):
         messages.error(request, 'Something went wrong')
         return redirect('invoices')
 
-    #fetch all the products - related to this invoice
-    products = Product.objects.filter(invoice=invoice)
+    #fetch all the invoice liness - related to this invoice
+    invoice_lines = InvoiceLine.objects.filter(invoice=invoice)
 
     #Get Client Settings
     p_settings = Settings.objects.get(clientName='Premium Solar Energy')
 
     #Calculate the Invoice Total
     invoiceTotal = 0.0
-    if len(products) > 0:
-        for x in products:
+    if len(invoice_lines) > 0:
+        for x in invoice_lines:
             y = float(x.quantity) * float(x.price)
             invoiceTotal += y
 
@@ -273,7 +283,7 @@ def viewDocumentInvoice(request, slug):
 
     context = {}
     context['invoice'] = invoice
-    context['products'] = products
+    context['invoice_lines'] = invoice_lines
     context['p_settings'] = p_settings
     context['invoiceTotal'] = "{:.2f}".format(invoiceTotal)
 
@@ -326,16 +336,16 @@ def emailDocumentInvoice(request, slug):
         messages.error(request, 'Something went wrong')
         return redirect('invoices')
 
-    #fetch all the products - related to this invoice
-    products = Product.objects.filter(invoice=invoice)
+    #fetch all the invoice lines - related to this invoice
+    invoice_lines = InvoiceLine.objects.filter(invoice=invoice)
 
     #Get Client Settings
     p_settings = Settings.objects.get(clientName='Premium Solar Energy')
 
     #Calculate the Invoice Total
     invoiceTotal = 0.0
-    if len(products) > 0:
-        for x in products:
+    if len(invoice_lines) > 0:
+        for x in invoice_lines:
             y = float(x.quantity) * float(x.price)
             invoiceTotal += y
 
@@ -343,7 +353,7 @@ def emailDocumentInvoice(request, slug):
 
     context = {}
     context['invoice'] = invoice
-    context['products'] = products
+    context['invoice_lines'] = invoice_lines
     context['p_settings'] = p_settings
     context['invoiceTotal'] = "{:.2f}".format(invoiceTotal)
 
